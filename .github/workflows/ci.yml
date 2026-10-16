@@ -29,9 +29,8 @@ jobs:
       - name: go vet
         run: go vet ./...
 
-      # Swarm is a group of goroutines with a shared cancel, and the gRPC tests
-      # serve from goroutines of their own, so the race detector is the point of
-      # this job.
+      # The gRPC tests serve from goroutines of their own, so the race detector
+      # is the point of this job.
       - name: go test -race
         run: go test -race ./...
 

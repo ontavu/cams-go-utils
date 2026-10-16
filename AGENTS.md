@@ -13,8 +13,8 @@ go test -race ./...
 go mod tidy             # and go.mod / go.sum must not change
 ```
 
-`.github/workflows/ci.yml` gates on all five. Run tests with `-race` every time: `Swarm`
-is goroutines sharing a cancel, and the gRPC tests serve from goroutines of their own.
+`.github/workflows/ci.yml` gates on all five. Run tests with `-race` every time: the gRPC
+tests serve from goroutines of their own.
 
 ## What may be imported
 

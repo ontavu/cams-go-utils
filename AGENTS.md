@@ -67,9 +67,9 @@ Cams requires this module by its tag, never through a `replace`: its CI and its 
 build see only the cams repository. A change therefore reaches Cams in three steps:
 
 1. Merge it here, then tag `vX.Y.Z` and push the tag. Stay below v1 while the API moves.
-2. In cams, `go get github.com/ontavu/cams-go-utils@vX.Y.Z` in `cams-agent/` and in
-   `cams-hub/go/`, then `go mod tidy` in both.
-3. Make any signature change on the cams side in the same change as the bump.
+2. `go get github.com/ontavu/cams-go-utils@vX.Y.Z`, then `go mod tidy`, in `cams-hub/go/`
+   of ontavu/cams and in ontavu/cams-agent.
+3. Make any signature change on their side in the same change as the bump.
 
 To develop both at once, put a `go.work` in the directory that holds the clones. Commit it
 to neither repository; `.gitignore` excludes it.
@@ -77,10 +77,24 @@ to neither repository; `.gitignore` excludes it.
 ## Go rules
 
 These are the rules of the Cams project (see its `AGENTS.md`), and they apply here as
-written:
+written, but for the errors:
 
 - New logic ships with its tests.
-- No error is silently ignored; add context with `errors.Annotate` from
-  `github.com/juju/errors`.
+- No error is silently ignored.
 - No goroutine leaks, and whoever cancels also waits.
 - No buffer grows without bound.
+
+### Errors come from the standard library
+
+No error package: this module stopped depending on `github.com/juju/errors`, which Cams
+still uses, and must not take it or another one back.
+
+- **Context is added with `fmt.Errorf("...: %w", err)`**, so `errors.Is` and `errors.As`
+  still reach the cause -- `fs.ErrNotExist` for a file `ServeTLS` cannot read, say.
+- **A condition a caller may test is a constant of type `ConstError`**, declared with
+  `const`, never a variable from `errors.New`: a variable can be reassigned by any package
+  that imports this one. `ErrNoCertificatePath` in `utils/grpc.go` is the example.
+- **Where the standard library has the sentinel, it is the one returned**:
+  `errors.ErrUnsupported` for what is not written yet, as in `DialTLS`.
+- **A message says what is wrong, and not the input that was wrong.** The caller has the
+  path it passed; repeating it in the error only doubles it in a log line.

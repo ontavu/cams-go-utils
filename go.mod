@@ -4,7 +4,6 @@ go 1.26.7
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/juju/errors v1.0.0
 	github.com/rs/zerolog v1.35.1
 	google.golang.org/grpc v1.61.1
 )

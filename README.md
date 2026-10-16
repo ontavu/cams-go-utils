@@ -15,7 +15,6 @@ One package, `utils`:
 | `Logger` and `LoggerContext`: a zerolog logger on stderr, which uses colour only when stderr is a terminal | `utils/logging.go` |
 | `ServerConfig.ServeInsecure` / `ServeTLS` and `DialInsecure`: a gRPC server whose every call leaves one access line, and a client dial | `utils/grpc.go` |
 | `NewSwarm` and `NewEnsemble`: groups of goroutines that share a cancel and are waited on together. When one member of an Ensemble returns, the others are cancelled; the members of a Swarm stop only when the Swarm is cancelled. | `utils/swarm.go` |
-| `DiscoverSystemNics`: the names of the host's network interfaces | `utils/lan.go` |
 
 ## The gRPC helpers do not know the protocol
 
